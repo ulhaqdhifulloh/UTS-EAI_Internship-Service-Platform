@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internship Application</title>
+    <script>
+        async function submitApplication(event) {
+            event.preventDefault();
+            const studentId = document.getElementById('studentId').value;
+            const internshipId = document.getElementById('internshipId').value;
+
+            const response = await fetch('http://localhost:8003/apply', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ student_id: Number(studentId), internship_id: Number(internshipId) })
+            });
+
+            const result = await response.json();
+            document.getElementById('result').textContent = JSON.stringify(result, null, 2);
+        }
+
+        async function loadApplications() {
+            const response = await fetch('http://localhost:8003/applications');
+            const applications = await response.json();
+            const list = document.getElementById('applicationsList');
+            list.innerHTML = '';
+
+            applications.forEach(app => {
+                const item = document.createElement('li');
+                item.textContent = `Student: ${app.student.name}, Internship: ${app.internship.title}, Status: ${app.status}`;
+                list.appendChild(item);
+            });
+        }
+
+        window.onload = loadApplications;
+    </script>
+</head>
+
+<body>
+    <h1>Internship Application Form</h1>
+    <form onsubmit="submitApplication(event)">
+        <label for="studentId">Student ID:</label>
+        <input type="number" id="studentId" required><br>
+
+        <label for="internshipId">Internship ID:</label>
+        <input type="number" id="internshipId" required><br>
+
+        <button type="submit">Apply</button>
+    </form>
+
+    <h2>Application Result</h2>
+    <pre id="result"></pre>
+
+    <h2>All Applications</h2>
+    <ul id="applicationsList"></ul>
+</body>
+
+</html>

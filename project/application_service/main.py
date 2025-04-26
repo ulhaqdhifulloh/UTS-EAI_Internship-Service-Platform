@@ -23,12 +23,12 @@ applications = []
 async def apply_internship(application: Application):
     # Verify student exists
     async with httpx.AsyncClient() as client:
-        student_response = await client.get(f"http://localhost:8001/students/{application.student_id}")
+        student_response = await client.get(f"http://localhost:8000/students/{application.student_id}")
         if student_response.status_code == 404:
             raise HTTPException(status_code=404, detail="Student not found")
         
         # Verify internship exists
-        internship_response = await client.get(f"http://localhost:8002/internships/{application.internship_id}")
+        internship_response = await client.get(f"http://localhost:8000/internships/{application.internship_id}")
         if internship_response.status_code == 404:
             raise HTTPException(status_code=404, detail="Internship not found")
     
